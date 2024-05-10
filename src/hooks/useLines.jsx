@@ -8,18 +8,20 @@ const useLines = (imageRef, setSelectedLineID, selectedLineID) => {
     const [lines, setLines] = useState([]);
     const [attachedShapeId, setAttachedShapeId] = useState('$');
     const [drawnFromId, setDrawnFromId] = useState('$');
-    const [shapePos, setShapePos] = useState(null);
+    const [drawnToId, setDrawnToId] = useState('$');
 
+    const [shapePos, setShapePos] = useState(null);
+    // console.log("line start from here",lines)
     //if shapeId remains '$', then line is attached from another line
     const startDrawing = (pos, shapeId, id, shapePosition) => {
         if (shapePosition) {
             setShapePos(shapePosition);
         }
         if (!id) {
-            console.log('Drawn From Shape ID:', shapeId);
+            //console.log('Drawn From Shape ID:', shapeId);
             setDrawnFromId(shapeId);
         } else {
-            console.log('Drawn From line ID:', id);
+            //console.log('Drawn From line ID:', id);
             setDrawnFromId(id);
         }
         setStartPos(pos);
@@ -28,6 +30,7 @@ const useLines = (imageRef, setSelectedLineID, selectedLineID) => {
 
 
     const draw = (pos) => {
+        console.log("Draw==>", pos, "startPos==>", startPos)
         if (startPos) {
             setEndPos(pos);
         }
@@ -35,6 +38,9 @@ const useLines = (imageRef, setSelectedLineID, selectedLineID) => {
 
     const stopDrawing = () => {
         if (startPos && endPos) {
+
+            console.log("Start and end Pos", startPos, endPos)
+
             let snapPos;
 
             if (drawnFromId === attachedShapeId) {
@@ -127,12 +133,14 @@ const useLines = (imageRef, setSelectedLineID, selectedLineID) => {
                             x: line.controlPoint.x * newImageSize.width + newImagePosition.x,
                             y: line.controlPoint.y * newImageSize.height + newImagePosition.y,
                         };
-                        return { ...line,
+                        return {
+                            ...line,
                             startPos: newStartPos,
                             endPos: newEndPos,
                             controlPoint: newControlPoint
                         };
                     });
+                    console.log("openChatDrawer===>", newLines)
                     setLines(newLines);
                 }
             };

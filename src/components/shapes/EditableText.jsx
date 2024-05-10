@@ -128,7 +128,7 @@ const EditableText = ({ initialText, x, y, fontSize, handleTextChange, color }) 
             fontWeight={fontWeight}
             ref={textRef}
             onDblClick={handleDblClick}
-            //onClick={() => console.log(text)}
+            //onClick={() => //console.log(text)}
             fill={color}
         />
     );

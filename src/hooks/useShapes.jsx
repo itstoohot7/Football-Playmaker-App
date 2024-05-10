@@ -10,7 +10,7 @@ function useShapes(imageRef, lines, setLines) {
     //Shape Handlers
     const addFormation = (formationType, initialColor) => {
         if (imageRef.current) {
-            console.log('Formation Type:', formationType);
+            // //console.log('Formation Type:', formationType);
             const middlePosition = {
                 x: imageRef.current.x() + (imageRef.current.width() / 2),
                 y: imageRef.current.height() / 2
@@ -22,7 +22,7 @@ function useShapes(imageRef, lines, setLines) {
             };
 
             const isOffenseFormation = formationType.startsWith('offense');
-            //console.log(isOffenseFormation);
+            ////console.log(isOffenseFormation);
 
             //OFFENSE FORMATIONS:
             if (formationType === 'offense2x2') {
@@ -573,11 +573,11 @@ function useShapes(imageRef, lines, setLines) {
                 height: imageRef.current.height()
             };
 
-            //console.log(shapeType, initialColor);
-            console.log(shapeType);
+            ////console.log(shapeType, initialColor);
+            //console.log("add shapes==>", shapeType);
 
             const isOffensePlayer = shapeType.startsWith('Offense');
-            //console.log(isOffensePlayer);
+            ////console.log(isOffensePlayer);
 
             const newShape = {
                 id: uuidv4(), formationType: isOffensePlayer ? 'offense' : 'defense', shapeType,
@@ -594,11 +594,53 @@ function useShapes(imageRef, lines, setLines) {
 
     const updateShape = (id, newAttributes) => {
         if (imageRef.current) {
-            setShapes(shapes.map(shape => shape.id === id ? { ...shape, ...newAttributes } : shape));
+            // setShapes(shapes.map(shape => shape.id === id ? { ...shape, ...newAttributes } : shape));
+            //console.log("updateShape ID ===>", id, newAttributes);
+            //console.log("updateShape att ===>", newAttributes);
+
+            const shapeChange = shapes.map((shape, index) => {
+                if (id?.length && id?.includes(shape.id)) {
+                    return { ...shape, ...newAttributes }
+                }
+                else {
+
+                    return shape
+                }
+            })
+            //console.log("Shape includes", shapeChange)
+            setShapes(shapeChange)
+
+
+            // setShapes(shapes.map((shape,index) => shape.id === id[index] ? { ...shape, ...newAttributes } : shape));
+        }
+    };
+
+
+    const updateShapeColor = (id, newAttributes) => {
+
+        if (imageRef.current) {
+            // setShapes(shapes.map(shape => shape.id === id ? { ...shape, ...newAttributes } : shape));
+            //console.log("ID===>", id, newAttributes);
+            shapes.map((shape, index) => {
+                if (id?.length && id?.includes(shape.id)) {
+                    // //console.log("Shape",shape)
+                    return { ...shape, ...newAttributes }
+                }
+                else {
+
+                    return shape
+                }
+            })
+
+
+
+
+            // setShapes(shapes.map((shape,index) => shape.id === id[index] ? { ...shape, ...newAttributes } : shape));
         }
     };
 
     const deleteShape = (id) => {
+        // //console.log("Delete Shape Id==>",id)
         if (imageRef.current) {
             setShapes(shapes.filter(shape => shape.id !== id));
         }
@@ -607,7 +649,7 @@ function useShapes(imageRef, lines, setLines) {
     //Unused for now
     //Deletes all shapes not of the formationType
     const deleteFormation = (formationType) => {
-        //console.log(formationType);
+        ////console.log(formationType);
         setShapes(shapes.filter(shape => shape.formationType === formationType));
     }
 
@@ -633,15 +675,15 @@ function useShapes(imageRef, lines, setLines) {
             console.error("You're clicking too fast, flipType in flipAllShapes is undefined");
             return;
         }
-        if(imageRef.current) {
+        if (imageRef.current) {
             const imageCenter = {
                 x: imageRef.current.x() + (imageRef.current.width() / 2),
                 y: imageRef.current.y() + (imageRef.current.height() / 2)
             }
-            // console.log("imageCenter: ", imageCenter);
+            // //console.log("imageCenter: ", imageCenter);
 
             let shapeIdMapping = {};
-                // Create new shapes for all the shapes
+            // Create new shapes for all the shapes
             let newShapes = shapes.map(shape => {
                 let newPosition;
                 let newAttributes = {};
@@ -669,57 +711,58 @@ function useShapes(imageRef, lines, setLines) {
                 const newId = uuidv4();
                 shapeIdMapping[shape.id] = newId;
                 const newShape = {
-                id: newId,
-                initialPosition: newPosition,
-                initialColor: shape.initialColor,
-                ...newAttributes,
-                formationType: shape.formationType,
-                shapeType: shape.shapeType,
-                text: shape.text,
+                    id: newId,
+                    initialPosition: newPosition,
+                    initialColor: shape.initialColor,
+                    ...newAttributes,
+                    formationType: shape.formationType,
+                    shapeType: shape.shapeType,
+                    text: shape.text,
                 };
                 return newShape;
             });
             // Set the new shapes
             setShapes(newShapes);
-            console.log("shapeIdMapping: ", shapeIdMapping);
+            // //console.log("shapeIdMapping: ", shapeIdMapping);
 
             let lineIdMapping = {};
             //Shapes hasn't been updated yet, to the respective new shapes
             const deepCopyLines = _.cloneDeep(lines).map(line => {
-                // console.log("shapeIdMapping: ", shapeIdMapping[line.attachedShapeId])
-                // console.log('newShapes current state:', newShapes)
+                // //console.log("shapeIdMapping: ", shapeIdMapping[line.attachedShapeId])
+                // //console.log('newShapes current state:', newShapes)
                 const flippedShape = newShapes.find(shape => shape.id === shapeIdMapping[line.attachedShapeId]);
                 // let flippedLine;
                 // if (!flippedShape) {
                 //     flippedLine = self.find(line => line.id === lineIdMapping[line.drawnFromId]);
-                //     console.log("flippedLine: ", flippedLine);
+                //     //console.log("flippedLine: ", flippedLine);
                 // }
                 // if (flippedShape) {
-                //     console.log("flippedShape: ", flippedShape);
+                //     //console.log("flippedShape: ", flippedShape);
                 // } else {
-                //     console.log("No shape found with the given id", flippedShape);
+                //     //console.log("No shape found with the given id", flippedShape);
                 // }
                 let newStartPos;
                 if (flippedShape && 'x' in flippedShape && 'y' in flippedShape) {
-                    newStartPos = {x: flippedShape.x, y: flippedShape.y};
+                    newStartPos = { x: flippedShape.x, y: flippedShape.y };
                 } else if (flippedShape && flippedShape.initialPosition) {
-                    newStartPos = {x: flippedShape.initialPosition.x, y: flippedShape.initialPosition.y};
+                    newStartPos = { x: flippedShape.initialPosition.x, y: flippedShape.initialPosition.y };
                 }
-                // console.log('newStartLinePos', newStartLinePos);
-                // console.log('This line endPos', line.endPos)
-                // console.log('This line controlPoint', line.controlPoint)
+                // //console.log('newStartLinePos', newStartLinePos);
+                // //console.log('This line endPos', line.endPos)
+                // //console.log('This line controlPoint', line.controlPoint)
                 let newEndPos;
                 let newControlPos;
                 if (flipType === "Up/Down") {
-                    newEndPos = {x: line.endPos.x, y: imageCenter.y - (line.endPos.y - imageCenter.y)};
-                    newControlPos = {x: line.controlPoint.x, y: imageCenter.y - (line.controlPoint.y - imageCenter.y)};
+                    newEndPos = { x: line.endPos.x, y: imageCenter.y - (line.endPos.y - imageCenter.y) };
+                    newControlPos = { x: line.controlPoint.x, y: imageCenter.y - (line.controlPoint.y - imageCenter.y) };
                 } else if (flipType === "Left/Right") {
-                    newEndPos = {x: imageCenter.x - (line.endPos.x- imageCenter.x), y: line.endPos.y};
-                    newControlPos = {x: imageCenter.x - (line.controlPoint.x - imageCenter.x), y: line.controlPoint.y};
+                    newEndPos = { x: imageCenter.x - (line.endPos.x - imageCenter.x), y: line.endPos.y };
+                    newControlPos = { x: imageCenter.x - (line.controlPoint.x - imageCenter.x), y: line.controlPoint.y };
                 }
                 const newId = uuidv4();
                 lineIdMapping[line.id] = newId;
-                return {...line,
+                return {
+                    ...line,
                     id: newId,
                     attachedShapeId: shapeIdMapping[line.attachedShapeId],
                     startPos: newStartPos,
@@ -727,13 +770,14 @@ function useShapes(imageRef, lines, setLines) {
                     controlPoint: newControlPos,
                 };
             });
-            console.log('deepCopyLines', deepCopyLines)
+            // //console.log('deepCopyLines', deepCopyLines)
             const deepCopyLinesAgain = _.cloneDeep(deepCopyLines).map(line => {
                 const flippedLine = deepCopyLines.find(l => l.id === lineIdMapping[line.drawnFromId]);
                 if (flippedLine) {
                     line.startPos = flippedLine.endPos;
                 }
-                return { ...line,
+                return {
+                    ...line,
                     drawnFromId: line.attachedShapeId || lineIdMapping[line.drawnFromId] || line.drawnFromId
                 };
             });
@@ -746,58 +790,58 @@ function useShapes(imageRef, lines, setLines) {
         }
     };
     useEffect(() => {
-    if (imageRef.current) {
-        const image = imageRef.current;
-        let initialImagePosition = { x: image.x(), y: image.y() };
-        let initialImageSize = { width: image.width(), height: image.height() };
+        if (imageRef.current) {
+            const image = imageRef.current;
+            let initialImagePosition = { x: image.x(), y: image.y() };
+            let initialImageSize = { width: image.width(), height: image.height() };
 
-        let initialRelativeShapes = shapes.map(shape => {
-            if(shape && 'x' in shape && 'y' in shape) {
-                let initialRelativePos = {
-                    x: (shape.x - initialImagePosition.x) / initialImageSize.width,
-                    y: (shape.y - initialImagePosition.y) / initialImageSize.height
-                };
-                return { ...shape, x:initialRelativePos.x, y:initialRelativePos.y};
-            }
-            else if (shape && shape.initialPosition) {
-                let initialRelativePos = {
-                    x: (shape.initialPosition.x - initialImagePosition.x) / initialImageSize.width,
-                    y: (shape.initialPosition.y - initialImagePosition.y) / initialImageSize.height
-                };
-                return { ...shape, initialPosition: initialRelativePos};
-            }
-        });
-        const handleResize = () => {
-            if (imageRef.current) {
-                const newImagePosition = { x: image.x(), y: image.y() };
-                const newImageSize = { width: image.width(), height: image.height() };
+            let initialRelativeShapes = shapes.map(shape => {
+                if (shape && 'x' in shape && 'y' in shape) {
+                    let initialRelativePos = {
+                        x: (shape.x - initialImagePosition.x) / initialImageSize.width,
+                        y: (shape.y - initialImagePosition.y) / initialImageSize.height
+                    };
+                    return { ...shape, x: initialRelativePos.x, y: initialRelativePos.y };
+                }
+                else if (shape && shape.initialPosition) {
+                    let initialRelativePos = {
+                        x: (shape.initialPosition.x - initialImagePosition.x) / initialImageSize.width,
+                        y: (shape.initialPosition.y - initialImagePosition.y) / initialImageSize.height
+                    };
+                    return { ...shape, initialPosition: initialRelativePos };
+                }
+            });
+            const handleResize = () => {
+                if (imageRef.current) {
+                    const newImagePosition = { x: image.x(), y: image.y() };
+                    const newImageSize = { width: image.width(), height: image.height() };
 
-                const newShapes = initialRelativeShapes.map(shape => {
-                    if(shape && 'x' in shape && 'y' in shape) {
-                        let newRelativePos = {
-                            x: shape.x * newImageSize.width + newImagePosition.x,
-                            y: shape.y * newImageSize.height + newImagePosition.y
-                        };
-                        return { ...shape, x:newRelativePos.x, y:newRelativePos.y};
-                    }
-                    else if (shape && shape.initialPosition) {
-                        let newRelativePos = {
-                            x: shape.initialPosition.x * newImageSize.width + newImagePosition.x,
-                            y: shape.initialPosition.y * newImageSize.height + newImagePosition.y
-                        };
-                        return { ...shape, initialPosition: newRelativePos};
-                    }
-                });
-                setShapes(newShapes);
-            }
-        };
-        window.addEventListener('resize', handleResize);
+                    const newShapes = initialRelativeShapes.map(shape => {
+                        if (shape && 'x' in shape && 'y' in shape) {
+                            let newRelativePos = {
+                                x: shape.x * newImageSize.width + newImagePosition.x,
+                                y: shape.y * newImageSize.height + newImagePosition.y
+                            };
+                            return { ...shape, x: newRelativePos.x, y: newRelativePos.y };
+                        }
+                        else if (shape && shape.initialPosition) {
+                            let newRelativePos = {
+                                x: shape.initialPosition.x * newImageSize.width + newImagePosition.x,
+                                y: shape.initialPosition.y * newImageSize.height + newImagePosition.y
+                            };
+                            return { ...shape, initialPosition: newRelativePos };
+                        }
+                    });
+                    setShapes(newShapes);
+                }
+            };
+            window.addEventListener('resize', handleResize);
 
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }
-}, [shapes, imageRef]);
+            return () => {
+                window.removeEventListener('resize', handleResize);
+            };
+        }
+    }, [shapes, imageRef]);
 
 
 

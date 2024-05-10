@@ -22,12 +22,16 @@ const LinemanOval = (props) => {
         ellipseRadiuses,
         dragBoundFunc,
         selectedShapeID,
+        shiftPressed,
         setSelectedShapeID,
         setHasBeenSelected,
         hasBeenSelected,
+        transformed,selectedColor
     } = props;
 
-    const isSelected = selectedShapeID === id;
+    // const isSelected = selectedShapeID === id;
+    const isSelected = (selectedShapeID && selectedShapeID?.find?.(i => i === id)) ?? false;
+
     const haloRadiuses = { x: ellipseRadiuses.x + 8, y: ellipseRadiuses.y + 8 };
     const strokeOptions = { color: 'black', strokeWidth: 2 };
     const centerLineWidth = 3.5;
@@ -53,11 +57,27 @@ const LinemanOval = (props) => {
     const [state, setState] = useState({ colorState: states[stateIndex], lineState: lineStates[lineIndex] });
 
     const handleLinemanClick = () => {
-        setSelectedShapeID(id);
-        console.log('Selected Shape ID:', id);
+        // setSelectedShapeID(id);
+        // //console.log('Selected Shape ID:', id);
 
-        //only change the state if the shape has been selected before and the id is the same as the selected id
-        if (hasBeenSelected && id === selectedShapeID) {
+        // //only change the state if the shape has been selected before and the id is the same as the selected id
+        // if (hasBeenSelected && id === selectedShapeID) {
+        if (shiftPressed) {
+
+            setSelectedShapeID([...selectedShapeID, id]);
+            transformed(true)
+
+
+        } else {
+            transformed(false)
+
+            setSelectedShapeID([id]);
+            // //console.log('Selected Shape ID:', id);
+        }
+
+        // //console.log('Selected Shape ID:', id);
+        // if (hasBeenSelected && id === selectedShapeID) {
+        if (hasBeenSelected && selectedShapeID?.includes(id)) {
             const newIndex = (stateIndex + 1) % states.length;
             setStateIndex(newIndex);
             setState({ colorState: states[newIndex], lineState: lineStates[lineIndex] });
@@ -73,7 +93,7 @@ const LinemanOval = (props) => {
         <>
             <Group
                 ref={shapeRef}
-                draggable
+                draggable={isSelected ? true : false}
                 dragBoundFunc={dragBoundFunc}
                 onDragStart={handleDragStart}
                 onDragMove={handleDragMove}
@@ -95,7 +115,7 @@ const LinemanOval = (props) => {
                         shadowColor='#184267'
                         onMouseDown={(e) => {
                             const startPos = e.target.getStage().getPointerPosition();
-                            console.log('Shape Halo onMouseDown', startPos);
+                            //console.log('Shape Halo onMouseDown', startPos);
                             startDrawing(startPos, id, null, position);
                             setIsMouseDownOnAnchor(true);
                             e.cancelBubble = true;
@@ -120,9 +140,9 @@ const LinemanOval = (props) => {
                     stroke={strokeOptions.color}
                     strokeWidth={strokeOptions.strokeWidth}
                     onClick={handleLinemanClick}
-                    fillLinearGradientStartPoint={{ x: state.colorState.leftState, y: 0 }}
-                    fillLinearGradientEndPoint={{ x: state.colorState.rightState, y: 0 }}
-                    fillLinearGradientColorStops={[0, initialColor, 1, 'black']}
+                    fillLinearGradientStartPoint={{ x: state?.colorState?.leftState, y: 0 }}
+                    fillLinearGradientEndPoint={{ x: state?.colorState?.rightState, y: 0 }}
+                    fillLinearGradientColorStops={[0, initialColor == undefined ? "#FFFFFF" : initialColor, 1, 'black']}
                 />
                 {stateIndex === 3 && (
                     <Rect

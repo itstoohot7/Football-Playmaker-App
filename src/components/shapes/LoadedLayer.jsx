@@ -81,10 +81,10 @@ const LoadedLayer = (props) => {
         ? { x: middlePosition.x - imageSize.width * 0.47, y: middlePosition.y - imageSize.height * 0.475 }
         : oldPlayNamePos;
 
-    // console.log('here:', playNamePos);
+    // //console.log('here:', playNamePos);
     //TESTING
     useEffect(() => {
-        console.log('currentLayerData:', currentLayerData);
+        //console.log('currentLayerData:', currentLayerData);
     }, [currentLayerData]);
 
     //Used for when field selection is changed

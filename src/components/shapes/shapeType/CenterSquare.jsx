@@ -20,14 +20,19 @@ const CenterSquare = (props) => {
         handleDragEnd,
         handleHideContextMenu,
         rectSize,
+        shiftPressed,
         dragBoundFunc,
         selectedShapeID,
         setSelectedShapeID,
         setHasBeenSelected,
         hasBeenSelected,
+        transformed
+
     } = props;
 
-    const isSelected = selectedShapeID === id;
+    // const isSelected = selectedShapeID === id;
+    const isSelected = (selectedShapeID && selectedShapeID?.find?.(i => i === id)) ?? false;
+
     const strokeOptions = { color: 'black', strokeWidth: 2 };
     const centerLineWidth = 3.5;
     const haloOffset = 13;
@@ -43,10 +48,23 @@ const CenterSquare = (props) => {
     const [state, setState] = useState(states[stateIndex]);
 
     const handleCenterClick = () => {
-        setSelectedShapeID(id);
+        // setSelectedShapeID(id);
+        
+        if (shiftPressed) {
+            
+            setSelectedShapeID([...selectedShapeID, id]);
+            transformed(true)
 
-        console.log('Selected Shape ID:', id);
-        if (hasBeenSelected && id === selectedShapeID) {
+        } else {
+            // If Shift key is not pressed, select only the clicked shape
+            setSelectedShapeID([id]);
+            transformed(false)
+
+        }
+
+
+        // if (hasBeenSelected && id === selectedShapeID) {
+        if (hasBeenSelected && selectedShapeID?.includes(id)) {
             const newIndex = (stateIndex + 1) % states.length;
             setStateIndex(newIndex);
             setState(states[newIndex]);
@@ -64,7 +82,7 @@ const CenterSquare = (props) => {
                 x={position.x}
                 y={position.y}
                 onContextMenu={handleRightClick}
-                draggable={true}
+                draggable={isSelected ? true : false}
                 onDragStart={handleDragStart}
                 onDragMove={handleDragMove}
                 onDragEnd={handleDragEnd}
@@ -84,7 +102,7 @@ const CenterSquare = (props) => {
                         offsetY={(rectSize.height + haloOffset) / 2}
                         onMouseDown={(e) => {
                             const startPos = e.target.getStage().getPointerPosition();
-                            console.log('Shape Halo onMouseDown', startPos);
+                            //console.log('Shape Halo onMouseDown', startPos);
                             startDrawing(startPos, id, null, position);
                             setIsMouseDownOnAnchor(true);
                             e.cancelBubble = true;

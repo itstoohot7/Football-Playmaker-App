@@ -75,7 +75,7 @@ function BottomDrawer(props) {
 
     const checkIfDrawerEmpty = () => {
         if (items.length === 0) {
-            console.log('Play drawer is empty');
+            //console.log('Play drawer is empty');
             // //Create empty objects for everything
             const newItem = {
                 id: uuidv4(),
@@ -100,10 +100,10 @@ function BottomDrawer(props) {
 
         checkIfDrawerEmpty();
 
-        console.log('Current items in drawer:', items);
+        //console.log('Current items in drawer:', items);
         // const stage = stageRef.stageRef.current;
         // const stageJson = stage.toJSON();
-        // console.log(stageJson);
+        // //console.log(stageJson);
     };
 
     const updateItem = (index) => {
@@ -169,12 +169,12 @@ function BottomDrawer(props) {
     };
 
     const handleItemClick = (text) => {
-        //console.log('IM HERE', text);
+        ////console.log('IM HERE', text);
         const playName = text.name;
         //Pass playName to a function that can render
         //the stage with that playName as the ID
-        console.log('Rendering play:', playName);
-        console.log(currentLayerData);
+        //console.log('Rendering play:', playName);
+        //console.log(currentLayerData);
 
         //Extract the items list and find the item with playName associated
         const item = items.find(item => item.name === playName);

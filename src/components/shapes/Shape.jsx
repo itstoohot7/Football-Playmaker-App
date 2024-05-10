@@ -30,6 +30,7 @@ function Shape(props) {
         onShapeDelete,
         onLineDelete,
         onHideContextMenu,
+        selectedColor,
         imageRef,
         stageRef,
         setSelectedShapes,
@@ -37,9 +38,10 @@ function Shape(props) {
         setSelectedShapeID,
         hasBeenSelected,
         setHasBeenSelected,
+        shapeRef, transformed
     } = props;
+    const [selectedIds, selectedShapeIds] = React.useState();
 
-    const shapeRef = useRef();
     const [position, setPosition] = useState(initialPosition);
     const [showContextMenu, setShowContextMenu] = useState(false);
     const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
@@ -58,7 +60,48 @@ function Shape(props) {
         height: SHAPE_SIZES.DIAMOND.HEIGHT.MAX
     }); // initial diamond size
 
+    const [shiftPressed, setShiftPressed] = useState(false);
+
     useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Shift') {
+                setShiftPressed(true);
+            }
+        };
+
+        const handleKeyUp = (e) => {
+            if (e.key === 'Shift') {
+                setShiftPressed(false);
+            }
+        };
+
+        // Add event listeners when component mounts
+        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keyup', handleKeyUp);
+
+        // Clean up event listeners when component unmounts
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyUp);
+        };
+    }, []); // Run this effect only once when component mounts
+
+
+    const selectedShape = useMemo(() => shapes.find(shape => shape.id === id), [shapes, id]);
+
+    useEffect(() => {
+
+        if (selectedShapeID) {
+            selectedShapeIds(selectedShapeID)
+        } else if (selectedShape) {
+
+            selectedShapeIds([selectedShape.id])
+
+        }
+
+    }, [selectedShapeID, selectedShape])
+    useEffect(() => {
+        // //console.log("position after changing ",onShapeChange)
         const image = imageRef.current;
         const initialImagePosition = { x: image.x(), y: image.y() };
         const initialImageSize = { width: image.width(), height: image.height() };
@@ -111,7 +154,7 @@ function Shape(props) {
 
     useEffect(() => {
         const handleKeyDown = (event) => {
-            if (event.key === 'Delete' && selectedShapeID === id) {
+            if (event.key === 'Delete' && selectedShapeID.includes(id)) {
                 handleDeleteClick();
             }
         };
@@ -122,14 +165,32 @@ function Shape(props) {
         };
     }, [selectedShapeID, id]);
 
-    const selectedShape = useMemo(() => shapes.find(shape => shape.id === id), [shapes, id]);
-    const handleOnClick = () => {
-        setSelectedShapes([]);
-        console.log('Shape Clicked', selectedShape);
-        setSelectedShapes([selectedShape]);
-        setSelectedShapeID(id);
-        console.log('Selected Shape ID:', id);
-    }
+
+
+    const handleOnClick = (e) => {
+        // //console.log("Event in on Click", shiftPressed, e.target, selectedIds)
+        // transformed(false)
+
+        if (shiftPressed) {
+            // If Shift key is pressed, add or remove the shape from selectedShapes
+            // setSelectedShapes([]);
+            // setSelectedShapeID([])
+            //console.log('Shape Clicked', selectedShape);
+            setSelectedShapes([selectedShape]);
+
+            setSelectedShapeID([...selectedShapeID, id]);
+            transformed(true)
+
+            //console.log('Selected Shape ID:', id);
+        } else {
+            // If Shift key is not pressed, select only the clicked shape
+            transformed(false)
+
+            setSelectedShapes([selectedShape]);
+            setSelectedShapeID([id]);
+            //console.log('Selected Shape ID:', id);
+        }
+    };
 
     const handleRightClick = (e) => {
         e.evt.preventDefault();
@@ -163,33 +224,47 @@ function Shape(props) {
         });
     };
 
+
+    // Function to handle drag start for a shape
     const handleDragStart = () => {
         setShowContextMenu(false);
     };
-
+    // console.log("Lines==>", lines, "Shapes==>", shapes)
 
     const handleDragMove = throttle((e) => {
         const newPos = e.target.position();
         setPosition(newPos);
+        //console.log("selectedShape==>\n", selectedShape);
         //onShapeChange(id, { x: e.target.x(), y: e.target.y() });
         const attachedLines = lines.filter(line => line.attachedShapeId === id);
+        // onShapeChange(selectedShapeID,{ x: e.target.x(), y: e.target.y() })
 
-        // Update start pos of line to new pos
+        // // Update start pos of line to new pos
         const updatedLines = attachedLines.map(line => ({
             ...line,
             startPos: newPos,
         }));
 
-        // Updates startPos of only lines attached to shape
+        // // Updates startPos of only lines attached to shape
         setLines(lines.map(line => updatedLines.find(l => l.id === line.id) || line));
-    }, 100); // Update at most once every 100ms
+
+
+        setPosition(newPos);
+
+
+    }, 100);
 
     const handleDragEnd = (e) => {
-        //console.log(e.target.position());
+
+        //console.log(selectedShapeID, "Shape ids", selectedIds, "Selected Shape Id with target on drag End==>\n", selectedShape, "\n", { x: e.target.x(), y: e.target.y() });
+
         const newPos = e.target.position();
+        // const ids = selectedShape.map(i => i.id)
+
+        onShapeChange(selectedIds, { x: e.target.x(), y: e.target.y() })
         setPosition(newPos);
-        onShapeChange(id, { x: e.target.x(), y: e.target.y() });
-        //setHistory([...history, { action : drag,  get shape object by id }]);
+
+        // onShapeChange(id, { x: e.target.x(), y: e.target.y() });
     };
 
     const handleHideContextMenu = () => {
@@ -201,25 +276,14 @@ function Shape(props) {
     };
 
     const dragBoundFunc = (pos) => {
-        const stage = shapeRef.current.getStage();
-        const { width: stageWidth, height: stageHeight } = stage.size();
-        const shape = shapeRef.current;
-        const box = shape.getClientRect(); // get bounding box of the shape
+
+        // const stage = shapeRef?.current?.[selectedShapeID[0]]?.getStage();
+        // const { width: stageWidth, height: stageHeight } = stage?.size();
+        // const shape = shapeRef.current?.[selectedShapeID[0]];
+        // const box = shape?.getClientRect(); // get bounding box of the shape
 
         let x = pos.x;
         let y = pos.y;
-
-        if (x < 0) {
-            x = 0;
-        } else if (x > stageWidth - box.width) {
-            x = stageWidth - box.width;
-        }
-
-        if (y < 0) {
-            y = 0;
-        } else if (y > stageHeight - box.height) {
-            y = stageHeight - box.height;
-        }
 
         return {
             x,
@@ -250,12 +314,15 @@ function Shape(props) {
         fontSize,
         rectSize,
         diamondSize,
+        selectedColor,
+        shiftPressed,
         dragBoundFunc,
         selectedShapeID,
         setSelectedShapeID,
         handleTextChange,
         setHasBeenSelected,
         hasBeenSelected,
+        transformed
     };
 
     switch (shapeType) {

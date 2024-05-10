@@ -71,14 +71,14 @@ export default function FeedBackForm(props) {
       process.env.REACT_APP_EMAILJS_USER_ID
     )
       .then((result) => {
-        console.log('SUCCESS!', result.text);
+        //console.log('SUCCESS!', result.text);
         setSnackbarMessage('Feedback sent successfully!');
         setSnackbarSeverity('success');
         setOpenSnackbar(true);
         sessionStorage.setItem('feedbackSent', 'true');
         handleFeedbackFormClose();
       }, (error) => {
-        console.log('FAILED...', error);
+        //console.log('FAILED...', error);
         setSnackbarMessage('Failed to send feedback!');
         setSnackbarSeverity('error');
         setOpenSnackbar(true);

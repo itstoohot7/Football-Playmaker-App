@@ -29,7 +29,7 @@ function TextTag(props) {
     const fontWeight = 700;
     const textTagRef = useRef();
     const [position, setPosition] = useState(initialPosition || { x: 50, y: 50 });
-    console.log('position', position)
+    //console.log('position', position)
     const [showContextMenu, setShowContextMenu] = useState(false);
     const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
     const [fontSize, setFontSize] = useState(TEXT_SIZES.FONT.MAX);
@@ -99,14 +99,14 @@ function TextTag(props) {
         setSelectedTextTagID([]);
         //Filter the shapes array to grab the shape by the id
         const selectedTextTag = textTags.find(text => text.id === id);
-        console.log('Text Clicked', selectedTextTag);
+        //console.log('Text Clicked', selectedTextTag);
 
         setSelectedTextTags([selectedTextTag]);
         setSelectedTextTagID(id);
         if (typeof onTextTagChange === 'function') {
             onTextTagChange(id, { color: selectedColor });
         }
-        // console.log('Selected Text ID:', id);
+        // //console.log('Selected Text ID:', id);
     }
 
     const handleRightClick = (e) => {
@@ -128,7 +128,7 @@ function TextTag(props) {
         setSelectedTextTagID([]);
         //Filter the shapes array to grab the shape by the id
         const selectedTextTag = textTags.find(text => text.id === id);
-        console.log('Text Clicked', selectedTextTag);
+        //console.log('Text Clicked', selectedTextTag);
 
         setSelectedTextTags([selectedTextTag]);
         setSelectedTextTagID(id);
@@ -137,7 +137,7 @@ function TextTag(props) {
     };
 
     const handleDragEnd = (e) => {
-        // console.log(e.target.position());
+        // //console.log(e.target.position());
         if (e.target) {
             setPosition(e.target.position());
             onTextTagChange(id, { x: e.target.x(), y: e.target.y() });

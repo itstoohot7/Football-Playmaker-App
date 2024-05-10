@@ -38,7 +38,8 @@ const QBProgressionButtonSx = {
 };
 
 
-const colorButtons = [
+export const colorButtons = [
+    theme.palette.white.main,
     theme.palette.pitchBlack.main,
     theme.palette.punky.main,
     theme.palette.mustard.main,
@@ -135,14 +136,16 @@ function Stencil(props) {
         setSnackbarMessage,
         snackbarSeverity,
         setSnackbarSeverity,
+        selectedColorButton,
+        setSelectedColorButton,
         openDialog
+
     } = props;
 
     const [selectedOffenseFormation, setSelectedOffenseFormation] = useState("");
     const [selectedDefenseFormation, setSelectedDefenseFormation] = useState("");
     const [toggleOffenseLeftRight, setToggleOffenseLeftRight] = useState(false); // false = Left
     const [toggleDefenseLeftRight, setToggleDefenseLeftRight] = useState(false);
-    const [selectedColorButton, setSelectedColorButton] = useState(0); // 0 is first index of colorButtons array
     const [selectedStrokeButton, setSelectedStrokeButton] = useState(lineButtons.findIndex(button => button.label === 'straight' && button.type === 'stroke'));
     const [selectedFeedback, setSelectedFeedback] = useState(false);
     const [selectedEndButton, setSelectedEndButton] = useState(lineButtons.findIndex(button => button.label === 'straight' && button.type === 'end') - lineButtons.findIndex(button => button.type === 'end'));
@@ -192,7 +195,7 @@ function Stencil(props) {
     };
 
     const handleAddPlayer = (e) => {
-        //console.log(e.target.value);
+        ////console.log(e.target.value);
         const newPlayer = e.target.value;
         onAddShape(newPlayer, shapeColor);
     };
@@ -203,7 +206,7 @@ function Stencil(props) {
         setToggleOffenseLeftRight(newtoggleOffenseLeftRight);
         const suffix = newtoggleOffenseLeftRight ? 'R' : 'L';
 
-        //console.log(selectedOffenseFormation, suffix);
+        ////console.log(selectedOffenseFormation, suffix);
         if (['3x1', 'Bunch', 'Empty'].includes(selectedOffenseFormation)) {
             onAddFormation(`offense${selectedOffenseFormation}${suffix}`, shapeColor);
         }
@@ -216,7 +219,7 @@ function Stencil(props) {
 
 
         if (['3-3Stack', '4-2-5', '4-3', '3-4'].includes(selectedDefenseFormation)) {
-            console.log(selectedDefenseFormation, suffix);
+            //console.log(selectedDefenseFormation, suffix);
             onAddFormation(`defense${selectedDefenseFormation}${suffix}`, shapeColor);
         }
     };
@@ -236,7 +239,7 @@ function Stencil(props) {
 
     const handleToggleRedZone = () => {
         const newZone = zone === 'middle' ? 'redzone' : 'middle';
-        // console.log(newZone);
+        // //console.log(newZone);
         setZone(newZone);
         if (fieldType !== 'blank') {
             setPreviousZone(newZone);
@@ -256,14 +259,14 @@ function Stencil(props) {
 
     // QB Progression handlers
     const handleAddQBProgression = (buttonText) => {
-        //console.log(buttonText);
+        ////console.log(buttonText);
         handleAddTextTag({ target: { value: buttonText } }, selectedColor);
     };
 
     // Text Tag handlers
     const handleAddTextTag = (e) => {
         const newText = e.target.value;
-        //console.log(newText);
+        ////console.log(newText);
         // setSelectedText(newText);
         onAddTextTag(newText, selectedColor);
     };
@@ -302,7 +305,7 @@ function Stencil(props) {
         event.preventDefault();
         const email = event.target.elements.email.value;
         const feedback = event.target.elements.feedback.value;
-        console.log(`Submission received: ${email} ${feedback}`);
+        //console.log(`Submission received: ${email} ${feedback}`);
         setSelectedFeedback(false);
     };
 
@@ -672,7 +675,7 @@ function Stencil(props) {
                                         border: selectedColorButton === index ? '2px solid white' : 'none',
                                     }}
                                     onClick={() => {
-                                        //console.log(color);
+                                        ////console.log(color);
                                         setSelectedColor(color);
                                         setSelectedColorButton(index);
                                         handleColorButtonPress();
@@ -711,7 +714,7 @@ function Stencil(props) {
                                                 onClick={() => {
                                                     setSelectedLineStroke(button.label);
                                                     handleStrokeTypeButtonPress();
-                                                    console.log(button.type, button.label);
+                                                    //console.log(button.type, button.label);
                                                     setSelectedStrokeButton(index);
                                                 }}
                                             >
@@ -747,7 +750,7 @@ function Stencil(props) {
                                                 onClick={() => {
                                                     setSelectedLineEnd(button.label);
                                                     handleStrokeEndButtonPress();
-                                                    console.log(button.type, button.label);
+                                                    //console.log(button.type, button.label);
                                                     setSelectedEndButton(index);
                                                 }}
                                             >
@@ -922,7 +925,7 @@ function Stencil(props) {
                     </Grid>
                 </Box>
 
-                <Box sx={{ flexGrow: 1, marginLeft: '-5px', marginTop: '35px', marginBottom: '0px' }}>
+                {/* <Box sx={{ flexGrow: 1, marginLeft: '-5px', marginTop: '35px', marginBottom: '0px' }}>
                     <Grid container spacing={0}>
                         <BottomDrawer
                             stageRef={stageRef}
@@ -957,7 +960,7 @@ function Stencil(props) {
                             openDialog={openDialog}
                         />
                     </Grid>
-                </Box>
+                </Box> */}
 
                 <Box sx={{ flexGrow: 1, marginLeft: '0px', marginTop: '20px', marginBottom: '0px' }}>
                     <Grid container spacing={0}>

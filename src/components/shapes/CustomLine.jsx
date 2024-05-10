@@ -88,7 +88,7 @@ function CustomLine(props) {
 
     //rerenders lines based on button inputs
     useEffect(() => {
-        console.log(selectedColor, selectedLineStroke, selectedLineEnd)
+        //console.log(selectedColor, selectedLineStroke, selectedLineEnd)
         if (isSelected) {
             onLineChange(id, {
                 color: selectedColor,
@@ -113,17 +113,19 @@ function CustomLine(props) {
     // }, [selectedLineID, id]);
 
     const handleLineClick = () => {
-        console.log(selectedLineStroke);
+        //console.log("handleLineClick",selectedLineStroke);
         setSelectedLineID(isSelected ? '$' : id);
     };
 
     const handleRightClick = (e) => {
         setSelectedLineID(id);
         e.evt.preventDefault();
+        //console.log("On Event Press ")
+        // return
         const stage = e.target.getStage();
         const mousePos = stage.getPointerPosition();
-        setContextMenuPosition({ x: mousePos.x - 20, y: mousePos.y - 15 });
-        setShowContextMenu(true);
+        setContextMenuPosition &&   setContextMenuPosition?.({ x: mousePos.x - 20, y: mousePos.y - 15 });
+        setShowContextMenu&&  setShowContextMenu?.(true);
     };
 
     // const handleHideContextMenu = () => {
@@ -175,7 +177,7 @@ function CustomLine(props) {
 
     const handleControlPointDragMove = (e) => {
         const newControlPoint = e.target.position();
-        //console.log('new control point', newControlPoint);
+        ////console.log('new control point', newControlPoint);
         setControlPoint(newControlPoint);
 
         // Update the line's points to create a quadratic curve
@@ -240,7 +242,7 @@ function CustomLine(props) {
             <Group
                 onContextMenu={handleRightClick}
                 ref={customLineRef}
-                onClick={() => { console.log(selectedColor, selectedLineStroke, selectedLineEnd); }}
+                // onClick={() => { //console.log(selectedColor, selectedLineStroke, selectedLineEnd); }}
             >
                 {/* Transparent Line */}
                 <Line

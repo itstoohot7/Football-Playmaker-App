@@ -1,3 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 .custom-scrollbar {
     flex: 0.2;
     padding: 1vw;
@@ -23,4 +26,11 @@
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+.onhover:hover{
+    background-color: #fdfefeb6;
+}
+.backgroundColor{
+    background-color: #707070ab;
 }

@@ -24,12 +24,10 @@ const subscribe = async (event) => {
             cancelUrl: 'https://www.chlk.football/cancel',
         });
     } catch (err) {
-        console.log('error occured while trying to subscribe', err);
+        //console.log('error occured while trying to subscribe', err);
     }
 
 }
-
-
 function PayWall() {
     const { tokens } = useTheme();
 

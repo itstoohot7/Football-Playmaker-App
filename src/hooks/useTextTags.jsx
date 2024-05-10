@@ -7,7 +7,7 @@ function useTextTags(imageRef, stageRef) {
 
     const addTextTag = (text, newColor, position) => {
         if (imageRef.current) {
-            console.log('Creating text tag:', text);
+            //console.log('Creating text tag:', text);
             const startPosition = {
                 x: imageRef.current.x() + (imageRef.current.width() / 2) - 30,
                 y: imageRef.current.height() - 60
@@ -59,12 +59,12 @@ function useTextTags(imageRef, stageRef) {
             console.error("You're clicking too fast, flipType is undefined");
             return;
         }
-        // console.log('Flip Type:', flipType);
+        // //console.log('Flip Type:', flipType);
         const imageCenter = {
             x: imageRef.current.x() + (imageRef.current.width() / 2) - 20,
             y: imageRef.current.y() + (imageRef.current.height() / 2)
         }
-        console.log('Image Center:', imageCenter);
+        //console.log('Image Center:', imageCenter);
 
         setTextTags(prevTextTags => {
             // Create new text tags for all the text tags

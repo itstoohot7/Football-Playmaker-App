@@ -1,6 +1,6 @@
 //DefenderDiamond.jsx
-import React from 'react';
-import { Rect, Group } from 'react-konva';
+import React, { useRef } from 'react';
+import { Rect, Group, Transformer } from 'react-konva';
 import ContextMenu from '../../menus/ContextMenu';
 import EditableText from '../EditableText';
 
@@ -28,12 +28,13 @@ const DefenderDiamond = (props) => {
         dragBoundFunc,
         selectedShapeID,
         setSelectedShapeID,
+        selectedColor
     } = props;
-    //Note: initialColor is set inside the stencil
 
-    const isSelected = selectedShapeID === id;
+    const isSelected = (selectedShapeID && selectedShapeID?.find?.(i => i === id)) ?? false;
+
     const haloOffset = 12;
-    const strokeOptions = { color: 'black', strokeWidth: .3 };
+    const strokeOptions = { color: initialColor != '#FFFFFF' ? 'white' : 'black', strokeWidth: .5 };
     var textAlignment = -5;
     if (text.length > 1) {
         textAlignment -= 5;
@@ -45,7 +46,7 @@ const DefenderDiamond = (props) => {
                 ref={shapeRef}
                 x={position.x}
                 y={position.y}
-                draggable={true}
+                draggable = {isSelected ? true : false}
                 onDragStart={handleDragStart}
                 onDragMove={handleDragMove}
                 onDragEnd={handleDragEnd}
@@ -58,7 +59,7 @@ const DefenderDiamond = (props) => {
                         width={diamondSize.width + haloOffset}
                         height={diamondSize.height + haloOffset}
                         rotation={45}
-                        //stroke={strokeOptions.color}
+                        // stroke={strokeOptions.color}
                         strokeWidth={2}
                         cornerRadius={2}
                         fill='white'
@@ -68,7 +69,7 @@ const DefenderDiamond = (props) => {
                         offsetY={(diamondSize.height + haloOffset) / 2}
                         onMouseDown={(e) => {
                             const startPos = e.target.getStage().getPointerPosition();
-                            console.log('Shape Halo onMouseDown', startPos);
+                            //console.log('Shape Halo onMouseDown', startPos);
                             startDrawing(startPos, id, null, position);
                             setIsMouseDownOnAnchor(true);
                             e.cancelBubble = true;
@@ -102,6 +103,7 @@ const DefenderDiamond = (props) => {
                     y={-6}
                     fontSize={fontSize}
                     handleTextChange={handleTextChange}
+                    color={ initialColor == 'black' || initialColor == '#000000' ? "white": initialColor == 'white' || initialColor == '#FFFFFF'|| initialColor == 'transparent' ? 'black':"white"}
                 />
             </Group>
             {showContextMenu && <ContextMenu position={contextMenuPosition} onDelete={handleDeleteClick} onMouseLeave={handleHideContextMenu} />}

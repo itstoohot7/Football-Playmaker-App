@@ -29,11 +29,16 @@ function ReceiverOval(props) {
         text,
         dragBoundFunc,
         selectedShapeID,
-        setSelectedShapeID
+        setSelectedShapeID,
+        selectedColor
     } = props;
 
-    const isSelected = selectedShapeID === id;
-    const strokeOptions = { color: 'black', strokeWidth: 2 };
+    // const isSelected = selectedShapeID === id;
+    const isSelected = (selectedShapeID && selectedShapeID?.find?.(i => i === id)) ?? false;
+
+    // const strokeOptions = { color: 'black', strokeWidth: 2 };
+    const strokeOptions = { color:initialColor == selectedColor && initialColor != '#FFFFFF' ? 'white' : 'black', strokeWidth: .5 };
+
     const haloRadiuses = { x: ellipseRadiuses.x + 8, y: ellipseRadiuses.y + 8 };
 
     var textAlignment = -5;
@@ -44,7 +49,7 @@ function ReceiverOval(props) {
     return (
         <>
             <Group
-                draggable
+                draggable = {isSelected ? true : false}
                 dragBoundFunc={dragBoundFunc}
                 onDragStart={handleDragStart}
                 onDragMove={handleDragMove}
@@ -68,8 +73,8 @@ function ReceiverOval(props) {
                         shadowColor='#184267'
                         onMouseDown={(e) => {
                             const startPos = e.target.getStage().getPointerPosition();
-                            console.log('Shape Halo onMouseDown', startPos);
-                            //console.log(position);
+                            //console.log('Shape Halo onMouseDown', startPos);
+                            ////console.log(position);
                             startDrawing(startPos, id, null, position);
                             setIsMouseDownOnAnchor(true);
                             e.cancelBubble = true;
@@ -96,12 +101,15 @@ function ReceiverOval(props) {
                     fill={initialColor}
                     opacity={1}
                 />
+             
                 <EditableText
                     initialText={text}
                     x={textAlignment}
                     y={-6}
                     fontSize={fontSize}
                     handleTextChange={handleTextChange}
+                    color={ initialColor == 'black' || initialColor == '#000000' ? "white": initialColor == 'white' || initialColor == '#FFFFFF'|| initialColor == 'transparent' ? 'black':"white"}
+
                 />
 
             </Group>
